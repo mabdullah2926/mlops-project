@@ -11,7 +11,6 @@ from sklearn.model_selection import train_test_split
 
 def train_disease_model():
   print('--- Training Disease Classification Model ---')
-  # Load Breast Cancer / Disease classification dataset
   data = load_breast_cancer()
   X, y = data.data, data.target
 
@@ -19,9 +18,7 @@ def train_disease_model():
       X, y, test_size=0.2, random_state=42
   )
 
-  # Start MLflow Run for Logistic Regression
   with mlflow.start_run(run_name='Disease_LogisticRegression'):
-    # Hyperparameters
     C_param = 1.0
     max_iter = 200
 
@@ -29,18 +26,15 @@ def train_disease_model():
     mlflow.log_param('C', C_param)
     mlflow.log_param('max_iter', max_iter)
 
-    # Model Training
     model = LogisticRegression(C=C_param, max_iter=max_iter)
     model.fit(X_train, y_train)
 
-    # Evaluation
     predictions = model.predict(X_test)
     acc = accuracy_score(y_test, predictions)
 
     print(f'Logistic Regression Accuracy: {acc:.4f}')
     mlflow.log_metric('accuracy', acc)
 
-    # Log and Register model in MLflow with 'Challenger' alias
     mlflow.sklearn.log_model(
         sk_model=model,
         artifact_path='logistic_regression_model',
@@ -51,7 +45,6 @@ def train_disease_model():
 
 def train_boston_model():
   print('--- Training Boston Housing Regression Model ---')
-  # Fetch Boston Housing dataset safely using openml
   boston = fetch_openml(name='boston', version=1, as_frame=True, parser='auto')
   X = boston.data.dropna()
   y = boston.target.loc[X.index]
@@ -60,9 +53,7 @@ def train_boston_model():
       X, y, test_size=0.2, random_state=42
   )
 
-  # Start MLflow Run for Random Forest
   with mlflow.start_run(run_name='Boston_RandomForest'):
-    # Hyperparameters
     n_estimators = 100
     max_depth = 10
 
@@ -70,13 +61,11 @@ def train_boston_model():
     mlflow.log_param('n_estimators', n_estimators)
     mlflow.log_param('max_depth', max_depth)
 
-    # Model Training
     model = RandomForestRegressor(
         n_estimators=n_estimators, max_depth=max_depth, random_state=42
     )
     model.fit(X_train, y_train)
 
-    # Evaluation
     predictions = model.predict(X_test)
     mse = mean_squared_error(y_test, predictions)
     r2 = r2_score(y_test, predictions)
@@ -85,17 +74,17 @@ def train_boston_model():
     mlflow.log_metric('mse', mse)
     mlflow.log_metric('r2_score', r2)
 
-    # Log and Register model in MLflow
+    # Fixed with skops_trusted_types parameter
     mlflow.sklearn.log_model(
         sk_model=model,
         artifact_path='random_forest_model',
         registered_model_name='Boston_Housing_Model',
+        skops_trusted_types=['sklearn.tree._tree.Tree'],
     )
     print('Boston Housing model logged and registered to MLflow successfully.\n')
 
 
 if __name__ == '__main__':
-  # Set tracking URI (local SQLite DB for tracking experiments)
   mlflow.set_tracking_uri('sqlite:///mlflow.db')
   mlflow.set_experiment('MLOps_Project_Experiment')
 
