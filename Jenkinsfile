@@ -8,17 +8,21 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Setup Venv & Install Dependencies') {
             steps {
-                // WSL/Linux ke liye 'sh' use karein
-                sh 'pip install -r requirements.txt'
+                sh '''
+                    python3 -m venv venv
+                    ./venv/bin/pip install --upgrade pip
+                    ./venv/bin/pip install -r requirements.txt
+                '''
             }
         }
 
         stage('Model Training & MLflow Logging') {
             steps {
-                // WSL/Linux ke liye 'sh' use karein
-                sh 'python3 train.py'
+                sh '''
+                    ./venv/bin/python train.py
+                '''
             }
         }
     }
