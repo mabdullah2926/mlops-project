@@ -10,13 +10,15 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat 'pip install -r requirements.txt'
+                // WSL/Linux ke liye 'sh' use karein
+                sh 'pip install -r requirements.txt'
             }
         }
 
         stage('Model Training & MLflow Logging') {
             steps {
-                bat 'python train.py'
+                // WSL/Linux ke liye 'sh' use karein
+                sh 'python3 train.py'
             }
         }
     }
