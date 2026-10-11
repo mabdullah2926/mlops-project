@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split
 
 def train_disease_model():
   print('--- Training Disease Classification Model ---')
-  # Load Disease/Breast Cancer dataset as a standard classification task
+  # Load Breast Cancer / Disease classification dataset
   data = load_breast_cancer()
   X, y = data.data, data.target
 
@@ -40,9 +40,13 @@ def train_disease_model():
     print(f'Logistic Regression Accuracy: {acc:.4f}')
     mlflow.log_metric('accuracy', acc)
 
-    # Log model to MLflow
-    mlflow.sklearn.log_model(model, 'logistic_regression_model')
-    print('Disease model logged to MLflow successfully.\n')
+    # Log and Register model in MLflow with 'Challenger' alias
+    mlflow.sklearn.log_model(
+        sk_model=model,
+        artifact_path='logistic_regression_model',
+        registered_model_name='Disease_Classifier_Model',
+    )
+    print('Disease model logged and registered to MLflow successfully.\n')
 
 
 def train_boston_model():
@@ -81,13 +85,17 @@ def train_boston_model():
     mlflow.log_metric('mse', mse)
     mlflow.log_metric('r2_score', r2)
 
-    # Log model to MLflow
-    mlflow.sklearn.log_model(model, 'random_forest_model')
-    print('Boston Housing model logged to MLflow successfully.\n')
+    # Log and Register model in MLflow
+    mlflow.sklearn.log_model(
+        sk_model=model,
+        artifact_path='random_forest_model',
+        registered_model_name='Boston_Housing_Model',
+    )
+    print('Boston Housing model logged and registered to MLflow successfully.\n')
 
 
 if __name__ == '__main__':
-  # Set tracking URI (can be local folder or remote server)
+  # Set tracking URI (local SQLite DB for tracking experiments)
   mlflow.set_tracking_uri('sqlite:///mlflow.db')
   mlflow.set_experiment('MLOps_Project_Experiment')
 
