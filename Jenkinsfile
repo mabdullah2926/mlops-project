@@ -30,15 +30,18 @@ pipeline {
     post {
         success {
             echo "Pipeline for branch ${env.BRANCH_NAME} completed successfully!"
-            // Optional: Add emailext here if SMTP is configured in Jenkins
+            emailext (
+                subject: "SUCCESS: Job '${env.JOB_NAME} [Build #${env.BUILD_NUMBER}]'",
+                body: "Hi,\n\nThe pipeline has successfully completed on branch ${env.BRANCH_NAME}.\n\nCheck build details at: ${env.BUILD_URL}",
+                to: "mabdullah2926@gmail.com"
+            )
         }
         failure {
             echo "Pipeline failed for branch ${env.BRANCH_NAME}!"
-            // Document requirement: Notify through Email on failure
             emailext (
                 subject: "FAILED: Job '${env.JOB_NAME} [Build #${env.BUILD_NUMBER}]'",
                 body: "Hi,\n\nThe pipeline has failed on branch ${env.BRANCH_NAME}.\n\nCheck console output at: ${env.BUILD_URL}",
-                to: "mabdullah2926@gmail.com" // Aap yahan apni email likh sakte hain
+                to: "mabdullah2926@gmail.com"
             )
         }
     }
