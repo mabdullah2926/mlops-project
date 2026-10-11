@@ -33,7 +33,7 @@ pipeline {
             emailext (
                 subject: "SUCCESS: Job '${env.JOB_NAME} [Build #${env.BUILD_NUMBER}]'",
                 body: "Hi,\n\nThe pipeline has successfully completed on branch ${env.BRANCH_NAME}.\n\nCheck build details at: ${env.BUILD_URL}",
-                to: "mabdullah2926@gmail.com"
+                to: "mabdullah19027934@gmail.com"
             )
         }
         failure {
@@ -41,7 +41,7 @@ pipeline {
             emailext (
                 subject: "FAILED: Job '${env.JOB_NAME} [Build #${env.BUILD_NUMBER}]'",
                 body: "Hi,\n\nThe pipeline has failed on branch ${env.BRANCH_NAME}.\n\nCheck console output at: ${env.BUILD_URL}",
-                to: "mabdullah2926@gmail.com"
+                to: "mabdullah19027934@gmail.com"
             )
         }
     }
